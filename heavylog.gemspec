@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Kristjan Rang"]
   spec.email         = ["mail@rang.ee"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = "Format all Rails logging per request"
+  spec.description   = "Format all Rails logging per request"
+  spec.homepage      = "https://github.com/krisrang/heavylog"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
