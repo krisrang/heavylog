@@ -5,15 +5,19 @@ module Heavylog
   class Middleware
     def initialize(app)
       @app = app
+      @assets_regex = %r(\A/{0,2}#{::Rails.application.config.assets.prefix})
     end
 
     def call(env)
-      request = ActionDispatch::Request.new(env)
-      RequestStore.store[:heavylog_request_id] = request.uuid
+      ignore = env['PATH_INFO'] =~ @assets_regex
+      if !ignore
+        request = ActionDispatch::Request.new(env)
+        RequestStore.store[:heavylog_request_id] = request.uuid
+      end
 
       @app.call(env)
     ensure
-      Heavylog.finish
+      Heavylog.finish if !ignore
     end
   end
 end
