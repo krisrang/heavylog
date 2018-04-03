@@ -91,6 +91,7 @@ module Heavylog
   end
 
   def config
+    return OrderedOptions.new if !application
     application.config.heavylog
   end
 end
