@@ -83,6 +83,8 @@ module Heavylog
 
     request = {
       request_id: RequestStore.store[:heavylog_request_id],
+      request_start: RequestStore.store[:heavylog_request_start],
+      ip: RequestStore.store[:heavylog_request_ip],
       messages: buffer.string.dup
     }.merge(RequestStore.store[:heavylog_request_data] || {})
 
