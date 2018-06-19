@@ -10,6 +10,8 @@ require 'heavylog/request_logger'
 module Heavylog
   module_function
 
+  TRUNCATION = '[TRUNCATED]'.freeze
+
   mattr_accessor :logger, :application, :formatter, :log_level
 
   def setup(app)
@@ -59,6 +61,7 @@ module Heavylog
 
   def log(severity, message = nil, progname = nil, &block)
     return if !config.enabled
+    return if !!RequestStore.store[:heavylog_truncated]
 
     uuid = RequestStore.store[:heavylog_request_id]
     return if !uuid
@@ -72,7 +75,14 @@ module Heavylog
     end
 
     RequestStore.store[:heavylog_buffer] ||= StringIO.new
-    RequestStore.store[:heavylog_buffer].puts(message)
+
+    if RequestStore.store[:heavylog_buffer].length + message.bytesize > config.message_limit
+      RequestStore.store[:heavylog_buffer].truncate(0)
+      RequestStore.store[:heavylog_buffer].puts(TRUNCATION)
+      RequestStore.store[:heavylog_truncated] = true
+    else
+      RequestStore.store[:heavylog_buffer].puts(message)
+    end
   end
 
   def finish

@@ -4,6 +4,7 @@ module Heavylog
     config.heavylog = Heavylog::OrderedOptions.new
     config.heavylog.enabled = false
     config.heavylog.path = 'log/heavylog.log'
+    config.heavylog.message_limit = 1024 * 1024 * 50 # 50MB
 
     initializer "heavylog.insert_middleware" do |app|
       app.config.middleware.insert_before Rails::Rack::Logger, Heavylog::Middleware
