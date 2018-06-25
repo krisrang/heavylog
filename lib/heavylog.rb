@@ -76,7 +76,7 @@ module Heavylog
 
     RequestStore.store[:heavylog_buffer] ||= StringIO.new
 
-    if RequestStore.store[:heavylog_buffer].length + message.bytesize > config.message_limit
+    if RequestStore.store[:heavylog_buffer].length + message_size(message) > config.message_limit
       RequestStore.store[:heavylog_buffer].truncate(0)
       RequestStore.store[:heavylog_buffer].puts(TRUNCATION)
       RequestStore.store[:heavylog_truncated] = true
@@ -105,6 +105,12 @@ module Heavylog
   def config
     return OrderedOptions.new if !application
     application.config.heavylog
+  end
+
+  def message_size(message)
+    return message.bytesize if message.respond_to?(:bytesize)
+    return message.map(&:to_s).sum(&:bytesize) if message.is_a?(Array)
+    message.length
   end
 end
 
