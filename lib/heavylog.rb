@@ -110,7 +110,7 @@ module Heavylog
   def message_size(message)
     return message.bytesize if message.respond_to?(:bytesize)
     return message.map(&:to_s).sum(&:bytesize) if message.is_a?(Array)
-    message.length
+    message.to_s.length
   end
 end
 
