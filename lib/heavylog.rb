@@ -6,6 +6,8 @@ require 'heavylog/log_subscriber'
 require 'heavylog/middleware'
 require 'heavylog/ordered_options'
 require 'heavylog/request_logger'
+require 'heavylog/sidekiq_logger'
+require 'heavylog/sidekiq_exception_handler'
 
 module Heavylog
   module_function
@@ -18,6 +20,7 @@ module Heavylog
     self.application = app
     patch_loggers
     attach_to_action_controller
+    attach_to_sidekiq
     setup_custom_payload
     set_options
   end
@@ -38,6 +41,16 @@ module Heavylog
 
   def attach_to_action_controller
     Heavylog::LogSubscriber.attach_to :action_controller
+  end
+
+  def attach_to_sidekiq
+    return if !config.log_sidekiq
+
+    Sidekiq.configure_server do |config|
+      config.options[:job_logger] = SidekiqLogger
+    end
+
+    Sidekiq.error_handlers << SidekiqExceptionHandler.new
   end
 
   def setup_custom_payload
@@ -85,6 +98,22 @@ module Heavylog
     end
   end
 
+  def log_sidekiq(jid, klass, args)
+    return if !config.enabled
+
+    RequestStore.store[:heavylog_request_id] = jid
+    RequestStore.store[:heavylog_request_start] = Time.now.iso8601
+    RequestStore.store[:heavylog_request_ip] = "127.0.0.1"
+
+    RequestStore.store[:heavylog_request_data] = {
+      controller: "SidekiqLogger",
+      action: klass,
+      args: args.to_s,
+    }
+
+    RequestStore.store[:heavylog_buffer] ||= StringIO.new
+  end
+
   def finish
     return if !config.enabled
 
@@ -100,6 +129,11 @@ module Heavylog
 
     formatted = Heavylog.formatter.call(request)
     Heavylog.logger.send(Heavylog.log_level, formatted)
+  end
+
+  def finish_sidekiq
+    finish
+    RequestStore.store[:heavylog_buffer] = nil
   end
 
   def config
