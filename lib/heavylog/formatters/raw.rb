@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Heavylog
   module Formatters
     class Raw

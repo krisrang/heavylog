@@ -1,18 +1,19 @@
 # frozen_string_literal: true
-require 'heavylog/version'
-require 'heavylog/formatters/raw'
-require 'heavylog/formatters/json'
-require 'heavylog/log_subscriber'
-require 'heavylog/middleware'
-require 'heavylog/ordered_options'
-require 'heavylog/request_logger'
-require 'heavylog/sidekiq_logger'
-require 'heavylog/sidekiq_exception_handler'
+
+require "heavylog/version"
+require "heavylog/formatters/raw"
+require "heavylog/formatters/json"
+require "heavylog/log_subscriber"
+require "heavylog/middleware"
+require "heavylog/ordered_options"
+require "heavylog/request_logger"
+require "heavylog/sidekiq_logger"
+require "heavylog/sidekiq_exception_handler"
 
 module Heavylog
   module_function
 
-  TRUNCATION = '[TRUNCATED]'.freeze
+  TRUNCATION = "[TRUNCATED]"
 
   mattr_accessor :logger, :application, :formatter, :log_level
 
@@ -26,15 +27,18 @@ module Heavylog
   end
 
   def patch_loggers
-    Rails.logger.extend(RequestLogger)
+    Rails.logger.extend(RequestLogger) if defined?(Rails)
   end
 
   def set_options
-    f = File.open(config.path, 'a')
-    f.binmode
-    f.sync = true
+    if config.path
+      f = File.open(config.path, "a")
+      f.binmode
+      f.sync = true
 
-    Heavylog.logger = ActiveSupport::Logger.new(f)
+      Heavylog.logger = ActiveSupport::Logger.new(f)
+    end
+
     Heavylog.formatter = config.formatter || Heavylog::Formatters::Raw.new
     Heavylog.log_level = config.log_level || :info
   end
@@ -44,7 +48,7 @@ module Heavylog
   end
 
   def attach_to_sidekiq
-    return if !config.log_sidekiq
+    return unless config.log_sidekiq
 
     Sidekiq.configure_server do |config|
       config.options[:job_logger] = SidekiqLogger
@@ -72,20 +76,23 @@ module Heavylog
     end
   end
 
-  def log(severity, message = nil, progname = nil, &block)
-    return if !config.enabled
+  def log(_severity, message=nil, progname=nil)
+    return unless config.enabled
     return if !!RequestStore.store[:heavylog_truncated]
 
     uuid = RequestStore.store[:heavylog_request_id]
-    return if !uuid
+    return unless uuid
 
     if message.nil?
-      if block_given?
-        message = yield
-      else
-        message = progname
-      end
+      message =
+        if block_given?
+          yield
+        else
+          progname
+        end
     end
+
+    message = message.gsub(/\e\[(\d+)m/, "")
 
     RequestStore.store[:heavylog_buffer] ||= StringIO.new
 
@@ -99,7 +106,7 @@ module Heavylog
   end
 
   def log_sidekiq(jid, klass, args)
-    return if !config.enabled
+    return unless config.enabled
 
     RequestStore.store[:heavylog_request_id] = jid
     RequestStore.store[:heavylog_request_start] = Time.now.iso8601
@@ -107,24 +114,24 @@ module Heavylog
 
     RequestStore.store[:heavylog_request_data] = {
       controller: "SidekiqLogger",
-      action: klass,
-      args: args.to_s,
+      action:     klass,
+      args:       args.to_s,
     }
 
     RequestStore.store[:heavylog_buffer] ||= StringIO.new
   end
 
   def finish
-    return if !config.enabled
+    return unless config.enabled
 
     buffer = RequestStore.store[:heavylog_buffer]
-    return if !buffer
+    return unless buffer && Heavylog.logger
 
     request = {
-      request_id: RequestStore.store[:heavylog_request_id],
+      request_id:    RequestStore.store[:heavylog_request_id],
       request_start: RequestStore.store[:heavylog_request_start],
-      ip: RequestStore.store[:heavylog_request_ip],
-      messages: buffer.string.dup
+      ip:            RequestStore.store[:heavylog_request_ip],
+      messages:      buffer.string.dup,
     }.merge(RequestStore.store[:heavylog_request_data] || {})
 
     formatted = Heavylog.formatter.call(request)
@@ -137,15 +144,17 @@ module Heavylog
   end
 
   def config
-    return OrderedOptions.new if !application
+    return OrderedOptions.new unless application
+
     application.config.heavylog
   end
 
   def message_size(message)
     return message.bytesize if message.respond_to?(:bytesize)
     return message.map(&:to_s).sum(&:bytesize) if message.is_a?(Array)
+
     message.to_s.length
   end
 end
 
-require 'heavylog/railtie' if defined?(Rails)
+require "heavylog/railtie" if defined?(Rails)

@@ -1,14 +1,15 @@
-require 'json'
-require 'action_pack'
-require 'active_support/core_ext/class/attribute'
-require 'active_support/log_subscriber'
-require 'request_store'
+# frozen_string_literal: true
+
+require "json"
+require "action_pack"
+require "active_support/core_ext/class/attribute"
+require "active_support/log_subscriber"
+require "request_store"
 
 module Heavylog
   class LogSubscriber < ActiveSupport::LogSubscriber
     def process_action(event)
-      payload = event.payload
-      data = extract_request(event, payload)
+      data = extract_request(event)
       RequestStore.store[:heavylog_request_data] = data
     end
 
@@ -23,7 +24,7 @@ module Heavylog
 
     private
 
-    def extract_request(event, payload)
+    def extract_request(event)
       payload = event.payload
       data = initial_data(payload)
       data.merge!(extract_status(payload))
@@ -35,11 +36,11 @@ module Heavylog
 
     def initial_data(payload)
       {
-        method: payload[:method],
-        path: extract_path(payload),
-        format: extract_format(payload),
+        method:     payload[:method],
+        path:       extract_path(payload),
+        format:     extract_format(payload),
         controller: payload[:controller],
-        action: payload[:action]
+        action:     payload[:action],
       }
     end
 
@@ -49,7 +50,7 @@ module Heavylog
     end
 
     def strip_query_string(path)
-      index = path.index('?')
+      index = path.index("?")
       index ? path[0, index] : path
     end
 
@@ -79,7 +80,7 @@ module Heavylog
 
     def extract_runtimes(event, payload)
       data = { duration: event.duration.to_f.round(2) }
-      [:view_runtime, :db_runtime].each do |key|
+      %i[view_runtime db_runtime].each do |key|
         data[key] = payload[key].to_f.round(2) if payload.key?(key)
       end
       data

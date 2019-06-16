@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 module Heavylog
   class Railtie < Rails::Railtie
     config.heavylog = Heavylog::OrderedOptions.new
     config.heavylog.enabled = false
-    config.heavylog.path = 'log/heavylog.log'
+    config.heavylog.path = "log/heavylog.log"
     config.heavylog.message_limit = 1024 * 1024 * 50 # 50MB
     config.heavylog.log_sidekiq = false
 

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Heavylog
   class SidekiqExceptionHandler
-    def call(ex, ctxHash)
-      Heavylog.log(:warn, Sidekiq.dump_json(ctxHash)) if !ctxHash.empty?
-      Heavylog.log(:warn, "#{ex.class.name}: #{ex.message}")
-      Heavylog.log(:warn, ex.backtrace.join("\n")) unless ex.backtrace.nil?
+    def call(exception, context)
+      Heavylog.log(:warn, Sidekiq.dump_json(context)) unless context.empty?
+      Heavylog.log(:warn, "#{exception.class.name}: #{exception.message}")
+      Heavylog.log(:warn, exception.backtrace.join("\n")) unless exception.backtrace.nil?
       Heavylog.finish_sidekiq
     end
   end
