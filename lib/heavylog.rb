@@ -14,6 +14,7 @@ module Heavylog
   module_function
 
   TRUNCATION = "[TRUNCATED]"
+  ANSI_REGEX = /\e\[(\d+)m/.freeze
 
   mattr_accessor :logger, :application, :formatter, :log_level
 
@@ -92,7 +93,8 @@ module Heavylog
         end
     end
 
-    message = message.gsub(/\e\[(\d+)m/, "")
+    message = message.gsub(ANSI_REGEX, "") if message.respond_to?(:gsub)
+    message = message.map { |m| m.respond_to?(:gsub) ? m.gsub(ANSI_REGEX, "") : m } if message.is_a?(Array)
 
     RequestStore.store[:heavylog_buffer] ||= StringIO.new
 
