@@ -63,7 +63,7 @@ module Heavylog
 
     klasses = Array(config.base_controller_class)
     klasses.map! { |klass| klass.try(:constantize) }
-    klasses.push(ActionController::Base) if klasses.empty?
+    klasses.push(ActionController::Base, ActionController::API) if klasses.empty?
     klasses.each { |klass| extend_base_controller_class(klass) }
   end
 
