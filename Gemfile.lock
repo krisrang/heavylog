@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heavylog (0.0.11)
+    heavylog (0.0.13)
       actionpack (>= 5)
       activesupport (>= 5)
       railties (>= 5)
@@ -43,7 +43,7 @@ GEM
     method_source (0.9.2)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     parallel (1.17.0)
     parser (2.6.3.0)
@@ -54,7 +54,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.0.4)
+    rails-html-sanitizer (1.2.0)
       loofah (~> 2.2, >= 2.2.2)
     railties (5.2.3)
       actionpack (= 5.2.3)
@@ -104,4 +104,4 @@ DEPENDENCIES
   rubocop (~> 0.71)
 
 BUNDLED WITH
-   2.0.1
+   2.0.2
