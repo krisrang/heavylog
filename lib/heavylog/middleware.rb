@@ -6,11 +6,12 @@ module Heavylog
   class Middleware
     def initialize(app)
       @app = app
-      @assets_regex = %r(\A/{0,2}#{::Rails.application.config.assets.prefix})
+      @sprockets = ::Rails.application.config.respond_to?(:assets)
+      @assets_regex = @sprockets ? %r(\A/{0,2}#{::Rails.application.config.assets.prefix}) : nil
     end
 
     def call(env)
-      ignore = env["PATH_INFO"] =~ @assets_regex
+      ignore = @sprockets && env["PATH_INFO"] =~ @assets_regex
       unless ignore
         request = ActionDispatch::Request.new(env)
         RequestStore.store[:heavylog_request_id] = request.uuid
