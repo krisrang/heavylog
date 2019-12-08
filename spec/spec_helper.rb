@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "heavylog"
 
 require 'simplecov'
 SimpleCov.start
 
 require 'codecov'
 SimpleCov.formatter = SimpleCov::Formatter::Codecov
+
+require "heavylog"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
