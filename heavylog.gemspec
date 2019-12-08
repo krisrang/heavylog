@@ -26,6 +26,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop", "~> 0.71"
+  spec.add_development_dependency "codecov", "~> 0.1.16"
+  spec.add_development_dependency "sidekiq", ">= 5.0"
 
   spec.add_runtime_dependency "actionpack",    ">= 5"
   spec.add_runtime_dependency "activesupport", ">= 5"
