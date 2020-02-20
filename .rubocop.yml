@@ -2,46 +2,42 @@ require:
   - rubocop-performance
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
 
 # # Commonly used screens these days easily fit more than 80 characters.
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 # Too short methods lead to extraction of single-use methods, which can make
 # the code easier to read (by naming things), but can also clutter the class
 Metrics/MethodLength:
-  Max: 125
+  Enabled: false
 
 # The guiding principle of classes is SRP, SRP can't be accurately measured by LoC
 Metrics/ClassLength:
-  Max: 1500
+  Enabled: false
 
 Metrics/AbcSize:
-  Max: 160
+  Enabled: false
 
 Metrics/CyclomaticComplexity:
-  Max: 45
+  Enabled: false
 
 Metrics/PerceivedComplexity:
-  Max: 45
+  Enabled: false
 
 Metrics/ParameterLists:
-  Max: 6
+  Enabled: false
 
 Metrics/ModuleLength:
-  Max: 125
+  Enabled: false
 
 Metrics/BlockLength:
-  Max: 45
-  Exclude:
-    - 'spec/**/*'
+  Enabled: false
 
 # Mixing the styles looks just silly.
 Style/HashSyntax:
   EnforcedStyle: ruby19_no_mixed_keys
-  Exclude:
-    - 'config/routes.rb'
 
 # Single quotes being faster is hardly measurable and only affects parse time.
 # Enforcing double quotes reduces the times where you need to change them
@@ -103,8 +99,11 @@ Style/ClassAndModuleChildren:
 Style/DoubleNegation:
   Enabled: false
 
+Style/AsciiComments:
+  Enabled: false
+
 # Most readable form.
-Layout/AlignHash:
+Layout/HashAlignment:
   EnforcedHashRocketStyle: table
   EnforcedColonStyle: table
 
@@ -125,14 +124,14 @@ Layout/MultilineMethodCallIndentation:
 # Suppressing exceptions can be perfectly fine, and be it to avoid to
 # explicitly type nil into the rescue since that's what you want to return,
 # or suppressing LoadError for optional dependencies
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Enabled: false
 
 # This is just silly. Calling the argument `other` in all cases makes no sense.
 Naming/BinaryOperatorParameterName:
   Enabled: false
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   AllowedNames:
     - io
     - id
@@ -147,4 +146,7 @@ Naming/UncommunicativeMethodParamName:
     - y
 
 Bundler/OrderedGems:
+  Enabled: false
+
+Gemspec/OrderedDependencies:
   Enabled: false
