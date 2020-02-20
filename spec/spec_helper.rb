@@ -2,7 +2,7 @@
 
 require "bundler/setup"
 
-require 'simplecov'
+require "simplecov"
 SimpleCov.start
 
 # require 'codecov'
