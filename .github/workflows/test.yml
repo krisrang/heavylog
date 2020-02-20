@@ -32,4 +32,5 @@ jobs:
         env:
           CI: true
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: bundle exec rspec
+        with:
+          coverageCommand: bundle exec rspec
