@@ -15,9 +15,8 @@ RSpec.describe Heavylog::LogSubscriber do
   let(:request) { Rack::MockRequest.new(app) }
 
   before :each do
-    RequestStore.clear!
     app.config.heavylog = heavylog_config
-    Heavylog.setup(app)
+    Heavylog.set_options
     Heavylog.logger = logger
   end
 
