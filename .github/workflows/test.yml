@@ -1,6 +1,6 @@
 name: Test
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -28,7 +28,8 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Run tests
+        uses: paambaati/codeclimate-action@v2.4.0
         env:
           CI: true
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         run: bundle exec rspec
