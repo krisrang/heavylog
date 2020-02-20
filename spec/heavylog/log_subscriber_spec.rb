@@ -25,4 +25,13 @@ RSpec.describe Heavylog::LogSubscriber do
 
     expect(JSON.parse(buffer.string)["location"]).to eq("http://redirected.com")
   end
+
+  it "logs exceptions" do
+    request.get("/raise")
+
+    line = JSON.parse(buffer.string)
+
+    expect(line["status"]).to eq(500)
+    expect(line["error"]).to include("This action raises an exception")
+  end
 end

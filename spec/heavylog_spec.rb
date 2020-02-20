@@ -1,6 +1,30 @@
 # frozen_string_literal: true
 
 RSpec.describe Heavylog do
+  let(:buffer) { StringIO.new }
+  let(:logger) { ActiveSupport::Logger.new(buffer) }
+  let(:heavylog_config) do
+    Heavylog::OrderedOptions.new.tap { |config|
+      config.enabled = true
+      config.message_limit = 1024 * 1024 * 50
+      config.formatter = Heavylog::Formatters::Json.new
+      config.custom_payload do |controller|
+        {
+          hostname: controller.request.host,
+        }
+      end
+    }
+  end
+
+  let(:app) { Rails.application }
+  let(:request) { Rack::MockRequest.new(app) }
+
+  before :each do
+    app.config.heavylog = heavylog_config
+    Heavylog.setup_custom_payload
+    Heavylog.logger = logger
+  end
+
   it "has a version number" do
     expect(Heavylog::VERSION).not_to be nil
   end
@@ -33,5 +57,13 @@ RSpec.describe Heavylog do
     Heavylog.log(nil, nil, "progname")
 
     expect(RequestStore.store[:heavylog_buffer].string).to eq("progname\n")
+  end
+
+  it "logs the custom payload" do
+    request.get("/test")
+
+    line = JSON.parse(buffer.string)
+
+    expect(line["hostname"]).to eq("example.org")
   end
 end
