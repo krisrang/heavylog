@@ -25,4 +25,18 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.before(:suite) do
+    Rails.application.config.heavylog = Heavylog::OrderedOptions.new.tap { |heavylog_config|
+      heavylog_config.enabled = true
+      heavylog_config.message_limit = 1024 * 1024 * 50
+      heavylog_config.formatter = Heavylog::Formatters::Json.new
+    }
+    Heavylog.setup(Rails.application)
+  end
+
+  config.before(:each) do
+    RequestStore.clear!
+    RequestStore.store[:heavylog_request_id] = SecureRandom.hex
+  end
 end

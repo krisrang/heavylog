@@ -1,23 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Heavylog do
-  let(:app_config) do
-    double(config: ActiveSupport::OrderedOptions.new.tap { |config|
-                     config.heavylog = Heavylog::OrderedOptions.new
-                     config.heavylog.enabled = true
-                     #  config.heavylog.log_sidekiq = true
-                     config.heavylog.message_limit = 1024 * 1024 * 50
-                     config.heavylog.path = "tmp/heavylog.log"
-                     config.heavylog.formatter = Heavylog::Formatters::Json.new
-                   })
-  end
-
-  before :each do
-    RequestStore.clear!
-    Heavylog.setup(app_config)
-    RequestStore.store[:heavylog_request_id] = SecureRandom.hex
-  end
-
   it "has a version number" do
     expect(Heavylog::VERSION).not_to be nil
   end

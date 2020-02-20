@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Heavylog::Middleware do
+RSpec.describe Heavylog::LogSubscriber do
   let(:buffer) { StringIO.new }
   let(:logger) { ActiveSupport::Logger.new(buffer) }
   let(:heavylog_config) do
