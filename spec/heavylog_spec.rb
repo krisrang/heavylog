@@ -3,9 +3,12 @@
 RSpec.describe Heavylog do
   let(:app_config) do
     double(config: ActiveSupport::OrderedOptions.new.tap { |config|
-                     config.heavylog = ActiveSupport::OrderedOptions.new
+                     config.heavylog = Heavylog::OrderedOptions.new
                      config.heavylog.enabled = true
+                     #  config.heavylog.log_sidekiq = true
                      config.heavylog.message_limit = 1024 * 1024 * 50
+                     config.heavylog.path = "tmp/heavylog.log"
+                     config.heavylog.formatter = Heavylog::Formatters::Json.new
                    })
   end
 
@@ -33,5 +36,19 @@ RSpec.describe Heavylog do
     Heavylog.log(nil, message)
 
     expect(RequestStore.store[:heavylog_buffer].string).to eq(" (0.8ms)  COMMIT\n")
+  end
+
+  it "fetches message from block if block given" do
+    Heavylog.log(nil) do
+      "block message"
+    end
+
+    expect(RequestStore.store[:heavylog_buffer].string).to eq("block message\n")
+  end
+
+  it "fetches message from progname if message is nil" do
+    Heavylog.log(nil, nil, "progname")
+
+    expect(RequestStore.store[:heavylog_buffer].string).to eq("progname\n")
   end
 end

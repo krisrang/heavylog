@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-require "bundler/setup"
-
 require "simplecov"
 SimpleCov.start
 
-require 'codecov'
-SimpleCov.formatter = SimpleCov::Formatter::Codecov
+if ENV["CI"]
+  require "codecov"
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
 
+require "bundler/setup"
+require "rails/all"
+Bundler.require(:default, :test)
+
+require "app/application"
 require "heavylog"
 
 RSpec.configure do |config|
