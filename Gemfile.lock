@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heavylog (0.0.16)
+    heavylog (0.0.17)
       actionpack (>= 5)
       activesupport (>= 5)
       railties (>= 5)
@@ -135,7 +135,7 @@ GEM
       thread_safe (~> 0.1)
     unicode-display_width (1.6.1)
     yard (0.9.24)
-    zeitwerk (2.2.2)
+    zeitwerk (2.3.0)
 
 PLATFORMS
   ruby
