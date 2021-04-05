@@ -138,6 +138,10 @@ module Heavylog
 
     formatted = Heavylog.formatter.call(request)
     Heavylog.logger.send(Heavylog.log_level, formatted)
+  rescue StandardError => e
+    Kernel.puts "HeavyLog: Error writing to log: #{e.class}: #{e.message}\n  #{e.backtrace.join("\n  ")}"
+
+    config.error_handler&.(exception: e)
   end
 
   def finish_sidekiq

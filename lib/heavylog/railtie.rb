@@ -7,6 +7,7 @@ module Heavylog
     config.heavylog.path = "log/heavylog.log"
     config.heavylog.message_limit = 1024 * 1024 * 50 # 50MB
     config.heavylog.log_sidekiq = false
+    config.heavylog.error_handler = ->(exception:) {}
 
     initializer "heavylog.insert_middleware" do |app|
       app.config.middleware.insert_before Rails::Rack::Logger, Heavylog::Middleware
