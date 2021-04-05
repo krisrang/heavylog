@@ -23,6 +23,7 @@ RSpec.describe Heavylog do
     app.config.heavylog = heavylog_config
     Heavylog.setup_custom_payload
     Heavylog.logger = logger
+    Heavylog.formatter = heavylog_config.formatter
   end
 
   it "has a version number" do
@@ -65,5 +66,17 @@ RSpec.describe Heavylog do
     line = JSON.parse(buffer.string)
 
     expect(line["hostname"]).to eq("example.org")
+  end
+
+  class ThrowingFormatter
+    def call(_data)
+      raise "bogus"
+    end
+  end
+
+  it "doesn't bubble up exceptions in formatters" do
+    Heavylog.formatter = ThrowingFormatter.new
+
+    expect { request.get("/test") }.to_not raise_error
   end
 end
