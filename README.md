@@ -75,7 +75,7 @@ Set `log_sidekiq` to `true` if you want to automatically log Sidekiq job runs to
 {"request_id":"fb2c3798e2634011d670f753","request_start":"2021-04-25T16:00:53+00:00","ip":"127.0.0.1","messages":"  Order Load (1.8ms)  SELECT \"orders\".* FROM \"orders\" WHERE \"orders\".\"id\" = $1 LIMIT $2  [[\"id\", 109987473], [\"LIMIT\", 1]]\n  Customer Load (1.7ms)  SELECT \"customers\".* FROM \"customers\" WHERE \"customers\".\"id\" = $1 LIMIT $2  [[\"id\", 1027337], [\"LIMIT\", 1]]\n","controller":"SidekiqLogger","action":"MailPrepaidCheckupsJob","args":"[109987473]"}
 ```
 
-Sidekiq job runs go into the same file as regular request logs but have controller set to `SidekiqLogger`. 
+Sidekiq job runs go into the same file as regular request logs but have controller set to `SidekiqLogger` and action to the name of the Job. 
 
 ### JSON formatter
 
@@ -84,7 +84,7 @@ Use the `Heavylog::Formatters::Json` formatter to convert the hash to JSON. The 
 
 ### Custom formatter
 
-The formatter interface is simply. It should just be a class with a `call` method that accepts a single argument which is the hash containing info about the request.  
+The formatter interface is simply a class with a `call` method that accepts a single argument which is the hash containing info about the request.  
 The method should return the final result you want to write to file. Heavylog writes one line per request.
 
 JSON formatter for example:
