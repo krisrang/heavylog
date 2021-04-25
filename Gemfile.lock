@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heavylog (0.0.18)
+    heavylog (0.0.19)
       actionpack (>= 5)
       activesupport (>= 5)
       railties (>= 5)
@@ -48,7 +48,7 @@ GEM
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
-    loofah (2.9.0)
+    loofah (2.9.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
@@ -157,4 +157,4 @@ DEPENDENCIES
   solargraph
 
 BUNDLED WITH
-   2.2.14
+   2.2.15
