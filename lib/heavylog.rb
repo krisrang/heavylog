@@ -139,7 +139,7 @@ module Heavylog
     formatted = Heavylog.formatter.call(request)
     Heavylog.logger.send(Heavylog.log_level, formatted)
   rescue StandardError => e
-    config.error_handler&.(exception: e)
+    config.error_handler&.(e)
   end
 
   def finish_sidekiq

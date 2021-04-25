@@ -75,8 +75,12 @@ RSpec.describe Heavylog do
   end
 
   it "doesn't bubble up exceptions in formatters" do
+    exception = nil
+
     Heavylog.formatter = ThrowingFormatter.new
+    app.config.heavylog.error_handler = ->(e) { exception = e }
 
     expect { request.get("/test") }.to_not raise_error
+    expect(exception.message).to include("bogus")
   end
 end
