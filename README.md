@@ -1,4 +1,4 @@
-# Heavylog [![Test](https://github.com/krisrang/heavylog/actions/workflows/test.yml/badge.svg)](https://github.com/krisrang/heavylog/actions/workflows/test.yml)
+# Heavylog [![Test](https://github.com/krisrang/heavylog/actions/workflows/test.yml/badge.svg)](https://github.com/krisrang/heavylog/actions/workflows/test.yml) [![Gem Version](https://badge.fury.io/rb/heavylog.svg)](https://badge.fury.io/rb/heavylog)
 
 Heavylog enables you to log all Rails requests to file as JSON or any other format you want.
 
