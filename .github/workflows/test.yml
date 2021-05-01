@@ -28,9 +28,6 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Run tests
-        uses: paambaati/codeclimate-action@v2.4.0
         env:
           CI: true
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageCommand: bundle exec rspec
+        run: bundle exec rspec
