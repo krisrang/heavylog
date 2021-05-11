@@ -3,6 +3,7 @@
 require "heavylog/version"
 require "heavylog/formatters/raw"
 require "heavylog/formatters/json"
+require "heavylog/formatters/ecs"
 require "heavylog/log_subscriber"
 require "heavylog/middleware"
 require "heavylog/ordered_options"
@@ -136,7 +137,7 @@ module Heavylog
       messages:      buffer.string.dup,
     }.merge(RequestStore.store[:heavylog_request_data] || {})
 
-    formatted = Heavylog.formatter.call(request)
+    formatted = Heavylog.formatter.call(request.transform_keys(&:to_s))
     Heavylog.logger.send(Heavylog.log_level, formatted)
   rescue StandardError => e
     config.error_handler&.(e)

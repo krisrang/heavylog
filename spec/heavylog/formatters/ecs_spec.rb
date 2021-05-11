@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Heavylog::Formatters::Raw do
+RSpec.describe Heavylog::Formatters::ECS do
   let(:buffer) { StringIO.new }
   let(:logger) { ActiveSupport::Logger.new(buffer) }
   let(:heavylog_config) do
@@ -11,7 +11,7 @@ RSpec.describe Heavylog::Formatters::Raw do
     }
   end
 
-  subject { Heavylog::Formatters::Raw.new }
+  subject { Heavylog::Formatters::ECS.new }
   let(:app) { Rails.application }
   let(:request) { Rack::MockRequest.new(app) }
 
@@ -21,12 +21,11 @@ RSpec.describe Heavylog::Formatters::Raw do
     Heavylog.logger = logger
   end
 
-  it "logs the request as raw" do
+  it "logs the request as JSON using ECS fields" do
     request.get("/test")
 
-    line = buffer.string
+    line = JSON.parse(buffer.string)
 
-    expect(line).to include("logger from action")
-    expect(line).to include("\"view_runtime\"=>")
+    expect(line["message"]).to include("logger from action")
   end
 end
