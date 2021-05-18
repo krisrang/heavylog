@@ -11,7 +11,8 @@ module Heavylog
         "messages"           => "message",
         "request_id"         => "http.request.id",
         "method"             => "http.request.method",
-        "format"             => "http.request.mime_type",
+        "referrer"           => "http.request.referrer",
+        "format"             => "http.response.format",
         "status"             => "http.response.status_code",
         "location"           => "http.response.location",
         "ip"                 => "source.address",
@@ -27,21 +28,37 @@ module Heavylog
 
       def call(data)
         ECS_MAP.each do |original, correct|
-          data[correct] = data.delete(original) if data[original]
+          dig_set(data, correct.split("."), data.delete(original)) if data[original]
         end
 
-        data["event.module"] = "heavylog"
-        data["event.category"] = "web"
-        data["event.dataset"] ||= data["heavylog.controller"] == "SidekiqLogger" ? "heavylog.sidekiq" : "heavylog.rails"
+        dig_set(data, %w[event module], "heavylog")
+        dig_set(data, %w[event category], "web")
 
-        if data["http.response.status_code"]
-          data["event.outcome"] = (200..399).cover?(data["http.response.status_code"]) ? "success" : "failure"
+        unless data.dig("event", "dataset")
+          value = data.dig("heavylog", "controller") == "SidekiqLogger" ? "heavylog.sidekiq" : "heavylog.rails"
+          dig_set(data, %w[event dataset], value)
         end
 
-        data["source.ip"] ||= data["source.address"]
-        data["url.path"] ||= data["url.original"]
+        if (code = data.dig("http", "response", "status_code"))
+          dig_set(data, %w[event outcome], (200..399).cover?(code) ? "success" : "failure")
+        end
+
+        dig_set(data, %w[source ip], data.dig("source", "address")) unless data.dig("source", "ip")
+        dig_set(data, %w[url path], data.dig("url", "original")) unless data.dig("url", "path")
 
         ::JSON.dump(data)
+      end
+
+      private
+
+      def dig_set(obj, keys, value)
+        key = keys.first
+        if keys.length == 1
+          obj[key] = value
+        else
+          obj[key] = {} unless obj[key]
+          dig_set(obj[key], keys.slice(1..-1), value)
+        end
       end
     end
   end

@@ -34,4 +34,22 @@ RSpec.describe Heavylog::LogSubscriber do
     expect(line["status"]).to eq(500)
     expect(line["error"]).to include("This action raises an exception")
   end
+
+  describe "referrer" do
+    it "logged when it exists" do
+      request.get("/test", { "HTTP_REFERER" => "stackoverflow.com" })
+
+      line = JSON.parse(buffer.string)
+
+      expect(line["referrer"]).to eq("stackoverflow.com")
+    end
+
+    it "is ignored when it doesn't exist" do
+      request.get("/test")
+
+      line = JSON.parse(buffer.string)
+
+      expect(line.key?("referrer")).to eq(false)
+    end
+  end
 end

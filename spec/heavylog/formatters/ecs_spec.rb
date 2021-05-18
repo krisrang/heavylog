@@ -28,4 +28,12 @@ RSpec.describe Heavylog::Formatters::ECS do
 
     expect(line["message"]).to include("logger from action")
   end
+
+  it "assigns ECS fields deeply as a nested hash" do
+    request.get("/test", { "HTTP_REFERER" => "stackoverflow.com" })
+
+    line = JSON.parse(buffer.string)
+
+    expect(line.dig("event", "module")).to eq("heavylog")
+  end
 end

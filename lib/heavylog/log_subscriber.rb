@@ -31,6 +31,7 @@ module Heavylog
       data.merge!(extract_runtimes(event, payload))
       data.merge!(extract_location)
       data.merge!(extract_unpermitted_params)
+      data.merge!(extract_referrer(payload))
       data.merge!(custom_options(event))
     end
 
@@ -100,6 +101,14 @@ module Heavylog
 
       RequestStore.store[:heavylog_unpermitted_params] = nil
       { unpermitted_params: unpermitted_params }
+    end
+
+    def extract_referrer(payload)
+      if payload[:request].is_a?(ActionDispatch::Request) && payload[:request].referrer
+        return { referrer: payload[:request].referrer }
+      end
+
+      {}
     end
   end
 end
