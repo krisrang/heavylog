@@ -16,7 +16,9 @@ module Heavylog
         "status"             => "http.response.status_code",
         "location"           => "http.response.location",
         "ip"                 => "source.address",
+        "host"               => "url.domain",
         "path"               => "url.original",
+        "user_agent"         => "user_agent.original",
         "controller"         => "heavylog.controller",
         "action"             => "heavylog.action",
         "unpermitted_params" => "heavylog.unpermitted_params",
@@ -28,7 +30,7 @@ module Heavylog
 
       def call(data)
         ECS_MAP.each do |original, correct|
-          dig_set(data, correct.split("."), data.delete(original)) if data[original]
+          dig_set(data, correct.split("."), data.delete(original)) if data.key?(original)
         end
 
         dig_set(data, %w[event module], "heavylog")
