@@ -17,7 +17,7 @@ module Heavylog
   TRUNCATION = "[TRUNCATED]"
   ANSI_REGEX = /\e\[(\d+)m/.freeze
 
-  mattr_accessor :logger, :application, :formatter, :log_level
+  mattr_accessor :logger, :application, :formatter, :log_level, :ignore_path
 
   def setup(app)
     self.application = app
@@ -43,6 +43,7 @@ module Heavylog
 
     Heavylog.formatter = config.formatter || Heavylog::Formatters::Raw.new
     Heavylog.log_level = config.log_level || :info
+    Heavylog.ignore_path = config.ignore_path || nil
   end
 
   def attach_to_action_controller

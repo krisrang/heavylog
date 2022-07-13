@@ -34,6 +34,7 @@ Rails.application.initialize!
 
 Rails.application.routes.draw do
   get "/test" => "test#test_action"
+  get "/ignore" => "test#test_action"
   get "/redirect" => "test#redirect_action"
   get "/raise" => "test#raise_action"
 end

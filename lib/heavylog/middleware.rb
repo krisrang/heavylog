@@ -11,7 +11,9 @@ module Heavylog
     end
 
     def call(env)
-      ignore = @sprockets && env["PATH_INFO"] =~ @assets_regex
+      ignore = (@sprockets && env["PATH_INFO"] =~ @assets_regex) ||
+               (Heavylog.ignore_path && env["PATH_INFO"] =~ Heavylog.ignore_path)
+
       unless ignore
         request = ActionDispatch::Request.new(env)
         RequestStore.store[:heavylog_request_id] = request.uuid
