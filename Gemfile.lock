@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heavylog (0.0.23)
+    heavylog (0.0.24)
       actionpack (>= 5)
       activesupport (>= 5)
       railties (>= 5)
