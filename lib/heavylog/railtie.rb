@@ -7,6 +7,7 @@ module Heavylog
     config.heavylog.path = "log/heavylog.log"
     config.heavylog.message_limit = 1024 * 1024 * 50 # 50MB
     config.heavylog.log_sidekiq = false
+    config.heavylog.ignore_path = nil
     config.heavylog.error_handler = lambda { |e|
       Kernel.puts "HeavyLog: Error writing to log: #{e.class}: #{e.message}\n  #{e.backtrace.join("\n  ")}"
     }

@@ -30,9 +30,16 @@ RSpec.describe Heavylog::LogSubscriber do
     request.get("/raise")
 
     line = JSON.parse(buffer.string)
-
     expect(line["status"]).to eq(500)
     expect(line["error"]).to include("This action raises an exception")
+  end
+
+  it "logs rescued exceptions" do
+    request.get("/raise_rescued")
+
+    line = JSON.parse(buffer.string)
+    expect(line["status"]).to eq(404)
+    expect(line["error"]).to eq(nil)
   end
 
   describe "referrer" do

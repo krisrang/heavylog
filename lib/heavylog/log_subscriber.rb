@@ -60,11 +60,11 @@ module Heavylog
     end
 
     def extract_status(payload)
-      if (status = payload[:status])
-        { status: status.to_i }
-      elsif (error = payload[:exception])
+      if (error = payload[:exception])
         exception, message = error
-        { status: get_error_status_code(exception), error: "#{exception}: #{message}" }
+        { status: payload[:status] || get_error_status_code(exception), error: "#{exception}: #{message}" }
+      elsif (status = payload[:status])
+        { status: status.to_i }
       else
         { status: 0 }
       end

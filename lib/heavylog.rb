@@ -54,7 +54,7 @@ module Heavylog
     return unless config.log_sidekiq
 
     Sidekiq.configure_server do |config|
-      config.options[:job_logger] = SidekiqLogger
+      config.job_logger = SidekiqLogger
     end
 
     Sidekiq.error_handlers << SidekiqExceptionHandler.new
