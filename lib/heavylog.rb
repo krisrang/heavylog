@@ -55,9 +55,9 @@ module Heavylog
 
     Sidekiq.configure_server do |config|
       config[:job_logger] = SidekiqLogger
-    end
 
-    Sidekiq.error_handlers << SidekiqExceptionHandler.new
+      config.error_handlers << SidekiqExceptionHandler.new
+    end
   end
 
   def setup_custom_payload
