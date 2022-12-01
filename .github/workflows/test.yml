@@ -31,3 +31,6 @@ jobs:
         env:
           CI: true
         run: bundle exec rspec
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3

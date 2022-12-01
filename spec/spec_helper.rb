@@ -3,6 +3,16 @@
 require "simplecov"
 SimpleCov.start
 
+require "simplecov-html"
+require "simplecov-cobertura"
+
+SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
+  [
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::CoberturaFormatter,
+  ]
+)
+
 require "bundler/setup"
 require "rails/all"
 Bundler.require(:default, :test)
