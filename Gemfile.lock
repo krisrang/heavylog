@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heavylog (0.0.26)
+    heavylog (0.0.27)
       actionpack (>= 5)
       activesupport (>= 5)
       railties (>= 5)
@@ -38,7 +38,7 @@ GEM
     diff-lcs (1.5.0)
     docile (1.4.0)
     e2mmap (0.1.0)
-    erubi (1.11.0)
+    erubi (1.12.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.4)
@@ -51,7 +51,7 @@ GEM
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
     mini_portile2 (2.8.0)
-    minitest (5.16.3)
+    minitest (5.17.0)
     nokogiri (1.13.10)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
