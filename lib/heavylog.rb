@@ -8,6 +8,7 @@ require "heavylog/log_subscriber"
 require "heavylog/middleware"
 require "heavylog/ordered_options"
 require "heavylog/request_logger"
+require "heavylog/proxy_logger"
 require "heavylog/sidekiq_logger"
 require "heavylog/sidekiq_exception_handler"
 
@@ -29,7 +30,13 @@ module Heavylog
   end
 
   def patch_loggers
-    Rails.logger.extend(RequestLogger) if defined?(Rails)
+    return unless defined?(Rails)
+
+    if Rails.logger.respond_to?(:broadcast_to)
+      Rails.logger.broadcast_to(ProxyLogger.new)
+    else
+      Rails.logger.extend(RequestLogger)
+    end
   end
 
   def set_options
